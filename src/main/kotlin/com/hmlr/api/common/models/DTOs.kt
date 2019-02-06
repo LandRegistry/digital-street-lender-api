@@ -113,21 +113,14 @@ data class X500NameWithNameDTO(
 
 fun Party.toDTOWithName() = X500NameWithNameDTO(
         X500NameDTO(
-                this.name.organisation,
-                this.name.locality,
-                this.name.country,
-                this.name.state,
-                this.name.organisationUnit,
-                this.name.commonName
+            this.name.organisation,
+            this.name.locality,
+            this.name.country,
+            this.name.state,
+            this.name.organisationUnit,
+            this.name.commonName
         ),
         this.name.x500Principal.name
-)
-
-data class ConveyancerInstructionDTO(
-        val title_number: String,
-        val case_reference: String,
-        val owner: PartyDetailsDTO,
-        val conveyancer: X500NameDTO
 )
 
 data class ChargesUpdateDTO @JsonCreator constructor(
@@ -150,8 +143,8 @@ fun Charge.toDTO() = ChargeDTO(
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, visible = true, property = "restriction_type")
 @JsonSubTypes(
-        JsonSubTypes.Type(value = RestrictionDTO::class, name = RestrictionDTO.RESTRICTION_TYPE),
-        JsonSubTypes.Type(value = ChargeRestrictionDTO::class, name = ChargeRestrictionDTO.RESTRICTION_TYPE)
+    JsonSubTypes.Type(value = RestrictionDTO::class, name = RestrictionDTO.RESTRICTION_TYPE),
+    JsonSubTypes.Type(value = ChargeRestrictionDTO::class, name = ChargeRestrictionDTO.RESTRICTION_TYPE)
 )
 open class RestrictionDTO(
         val restriction_id: String,
@@ -264,6 +257,11 @@ data class TitleDTO(
         val restrictions: List<RestrictionDTO>
 )
 
+data class TitleOwnerDTO(
+        val title_number: String,
+        val owner: PartyDetailsDTO
+)
+
 data class SalesAgreementDTO(
         val buyer: PartyDetailsDTO,
         val buyer_conveyancer: X500NameDTO,
@@ -279,6 +277,7 @@ data class SalesAgreementDTO(
         val balance: BigDecimal,
         val balance_currency_code: String,
         val guarantee: String,
+        val payment_settler: X500NameDTO,
         val latest_update_date: LocalDateTime?
 )
 
@@ -288,7 +287,7 @@ data class SalesAgreementSignDTO(
         val signatory_individual: PartyDetailsDTO?
 )
 
-fun LandAgreementState.toDTO(latestUpdateDate: LocalDateTime? = null) = SalesAgreementDTO(
+fun LandAgreementState.toDTO(paymentSettler: Party, latestUpdateDate: LocalDateTime? = null) = SalesAgreementDTO(
         this.buyer.toDTO(),
         this.buyerConveyancer.toDTO(),
         this.creationDate,
@@ -303,6 +302,7 @@ fun LandAgreementState.toDTO(latestUpdateDate: LocalDateTime? = null) = SalesAgr
         this.balance.toDecimal(),
         this.balance.token.currencyCode,
         this.titleGuarantee.name.toLowerCase(),
+        paymentSettler.toDTO(),
         latestUpdateDate
 )
 

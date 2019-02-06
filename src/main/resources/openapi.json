@@ -306,7 +306,8 @@
           "deposit_currency_code",
           "balance",
           "balance_currency_code",
-          "guarantee"
+          "guarantee",
+          "payment_settler"
         ],
         "properties": {
           "buyer": {
@@ -381,6 +382,14 @@
               "limited"
             ],
             "example": "full"
+          },
+          "payment_settler": {
+            "$ref": "#/components/schemas/X500"
+          },
+          "latest_update_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-11-07T10:25:29+00:00"
           }
         }
       },
